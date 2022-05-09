@@ -1,0 +1,51 @@
+{
+  "name": "api.nordly-accounts",
+  "version": "2.0.0",
+  "description": "",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emerson-Britto/api.nordly-accounts.git"
+  },
+  "keywords": [
+    "nordly",
+    "musiky",
+    "emerson-britto",
+    "music",
+    "account-center"
+  ],
+  "author": "Emerson-Britto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Emerson-Britto/api.nordly-accounts/issues"
+  },
+  "homepage": "https://github.com/Emerson-Britto/api.nordly-accounts#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.3",
+    "mysql2": "^2.3.3",
+    "nodemailer": "^6.7.5",
+    "passport": "^0.5.2",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "redis": "^4.1.0",
+    "sequelize": "^6.19.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.31",
+    "@types/passport": "^1.0.7",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.7.0"
+  }
+}
