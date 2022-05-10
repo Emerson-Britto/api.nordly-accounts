@@ -1,5 +1,6 @@
 class InvalidArgumentError extends Error {
-  constructor(msg) {
+  msg:string;
+  constructor(msg:string) {
     super(msg);
     this.name = 'InvalidArgumentError';
     this.msg = msg;
@@ -7,7 +8,8 @@ class InvalidArgumentError extends Error {
 }
 
 class InternalServerError extends Error {
-  constructor(msg) {
+  msg:string;
+  constructor(msg:string) {
     super(msg);
     this.name = 'InternalServerError';
     this.msg = msg;
@@ -15,7 +17,8 @@ class InternalServerError extends Error {
 }
 
 class InvalidService extends Error {
-  constructor(msg) {
+  msg:string;
+  constructor(msg:string) {
     super(msg);
     this.name = 'InvalidService';
     this.msg = msg;

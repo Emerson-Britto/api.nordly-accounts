@@ -21,15 +21,11 @@ const createAccount = async (req:Request, res:Response) => {
 		return res.status(401).json({ msg: 'account was denied' });
 	};
 
-	delete userData.rePassword;
-
-	userData.passwordHash = await securityController.getHash(userData.password);
+	//delete userData.rePassword;
+	//userData.passwordHash = await securityController.getHash(userData.password);
 	userData.lastSeen = moment().subtract({ day: 14, hour: 22 }).unix();
-	userData.verified = 0;
-	userData.devices = JSON.stringify([]);
 
 	const dbUserData = await accountController.add(userData);
-
 	await mailController.sendVerificationMail(dbUserData.mail);
 
 	res.status(201).send();

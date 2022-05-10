@@ -1,4 +1,4 @@
-import instance from '../dataBases/mySql';
+import sequelize from '../dataBases/mySql';
 import {
   Model,
   DataTypes,
@@ -8,21 +8,21 @@ import {
 } from 'sequelize';
 
 class AccountModel extends Model<InferAttributes<AccountModel>, InferCreationAttributes<AccountModel>> {
-  declare id: CreationOptional<Number>;
-  declare displayName:String;
-  declare mail:String;
-  declare lastSeen:Number;
+  declare id: CreationOptional<number>;
+  declare displayName:string;
+  declare mail:string;
+  declare lastSeen:number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
 AccountModel.init(
-  id: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    autoIncrement: true,
-    primaryKey: true
-  },
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true
+    },
     displayName: {
       type: new DataTypes.STRING(20),
       allowNull: false
@@ -34,13 +34,13 @@ AccountModel.init(
     lastSeen: {
       type: DataTypes.STRING(128),
       allowNull: false
-    }
+    },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   },
   {
     tableName: 'accounts',
-    sequelize: instance
+    sequelize
   }
 );
 

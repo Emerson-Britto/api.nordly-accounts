@@ -1,14 +1,54 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient, RedisClientOptions, RedisClientType } from 'redis';
 
-export default const redisDB = async(): Promise<RedisClientType> => {
-  return new Promise(async(resolve, reject) => {
-    const client = createClient('redis://redis-10374.c258.us-east-1-4.ec2.cloud.redislabs.com:10374', {
-      password: 'hBm0TciZS8Rkg9hZavvn38yXpF0Qnrv5'
+
+class Redis {
+  client: RedisClientType;
+  constructor() {
+    this.client = createClient({
+      url: process.env.REDIS_ENDPOINT,
+      password: process.env.REDIS_PASSWORD
     });
+    this.client.on('error', (err:any) => console.error(err));
+    this.client.connect();
+  }
 
-    client.on('error', reject);
-
-    await client.connect();
-    resolve(client);
-  })
+  connection() {
+    return this.client;
+  }
 }
+
+export default new Redis();
+
+
+// const redisDB = async() => {
+//   return new Promise(async(resolve, reject): Promise<RedisClientType> => {
+//     const client:RedisClientType = createClient<RedisClientOptions>({
+//       url: 'redis-16973.c256.us-east-1-2.ec2.cloud.redislabs.com:16973',
+//       password: '1iXzcGhWUqSRnyvif0OTaJpDIJgGMYtt'
+//     });
+
+//     client.on('error', reject);
+
+//     await client.connect();
+//     resolve(client);
+//   })
+// }
+
+// export default redisDB();
+
+
+// import { createClient, RedisClientOptions, RedisClientType } from "redis";
+
+// const factory = (options: RedisClientOptions<any, any>): RedisClientType => {
+//   return createClient(options);
+// };
+
+// import { createClient } from "redis";
+// type RedisClientType = ReturnType<typeof createClient>;
+// type RedisClientOptions = Parameters<typeof createClient>[0];
+
+// const factory = (options: RedisClientOptions): RedisClientType => {
+//   return createClient(options);
+// };
+
+// const client: RedisClientType = factory({});

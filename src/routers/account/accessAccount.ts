@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import moment from 'moment';
-import accountController from './accountController';
-import securityController from './securityController';
-import mailController from '../../common/mailController';
+import accountController from '../../controllers/accountController';
+import securityController from '../../controllers/securityController';
+import mailController from '../../controllers/mailController';
+import { DBAccount } from '../../common/interfaces';
 
 const accessAccount = async(req:Request, res:Response) => {
 
@@ -10,18 +11,17 @@ const accessAccount = async(req:Request, res:Response) => {
 	const account = req.account;
 	const deviceData = req.body.deviceData;
 
-	if(!account.verified) {
-		await mailController.sendVerificationMail(account.mail);
-		return res.status(428).json({ msg: 'account needs to be verified'});
-	}
+	// if(!account.verified) {
+	// 	await mailController.sendVerificationMail(account.mail);
+	// 	return res.status(428).json({ msg: 'account needs to be verified'});
+	// }
 
-	const newDevices = await securityController.revokeInvalidDevices(account.devices);
 	const newLastSeen = moment().unix();
-	await accountController.update(account, { newDevices, newLastSeen });
+	await accountController.update(account, { newLastSeen });
 
 	const accessToken = await securityController.createAccessToken(account, deviceData);
 
-	res.status(200).send({ACCESS_TOKEN: accessToken});
+	res.status(200).send({ ACCESS_TOKEN: accessToken });
 }
 
 export default accessAccount;

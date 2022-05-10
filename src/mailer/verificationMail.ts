@@ -1,6 +1,7 @@
-import Mail from './index.js';
+import Mail from './index';
+import { MailData } from '../common/interfaces';
 
-function mailText({ mail, code }) {
+function mailText({ mail, code }:{ mail:string, code:number }) {
   return`
   By: inifity - account center
   Mail: ${ mail }
@@ -8,7 +9,7 @@ function mailText({ mail, code }) {
   `
 }
 
-function mailHtml({ mail, code }) {
+function mailHtml({ mail, code }:{ mail:string, code:number }) {
   return`
 <!DOCTYPE html>
 <html>
@@ -60,17 +61,18 @@ function mailHtml({ mail, code }) {
   </section>
 </body>
 </html>
-  `
+`
 }
 
 class VerificationMail extends Mail {
-  constructor({ mail, code }) {
-    super();
-    this.from = '"Infinity Center" <noreply@inifity.com>';
-    this.to = mail;
-    this.subject = 'Verification Mail';
-    this.text = mailText({ mail, code });
-    this.html = mailHtml({ mail, code });
+  constructor({ mail, code }:{ mail:string, code:number }) {
+    super({
+      from: '"Nordly Center" <noreply@nordly.com>',
+      to: mail,
+      subject: 'Verification Mail',
+      text: mailText({ mail, code }),
+      html: mailHtml({ mail, code })   
+    });
   }
 }
 

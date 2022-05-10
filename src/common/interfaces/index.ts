@@ -1,17 +1,29 @@
 export interface UserData {
-	displayName:String;
-	mail:String;
+	displayName:string;
+	mail:string;
 }
 
 export interface Account {
-	displayName:String;
-	mail:String;
-	lastSeen:Number;
+	displayName:string;
+	mail:string;
+	lastSeen:number;
 }
 
 export interface DBAccount {
-	id:Number;
-	displayName:String;
-	mail:String;
-	lastSeen:Number;
+	id:number;
+	displayName:string;
+	mail:string;
+	lastSeen:number;
+}
+
+export interface TokenInfor {
+	lastAccess:number;
+}
+
+export interface MailData {
+  from:string;
+  to:string;
+  subject:string;
+  text:string;
+  html:string;
 }

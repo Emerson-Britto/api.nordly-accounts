@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { MailData } from '../common/interfaces';
 
 const prodConfig = {
   host: process.env.MAIL_HOST,
@@ -9,25 +10,28 @@ const prodConfig = {
   secure: true
 };
 
-const devConfig = (testAccount) => ({
-  host: 'smtp.ethereal.email',
-  auth: testAccount,
-});
-
 async function setMailConfig() {
   if (!process.env.DEV_ENV) {
     return prodConfig;
   } else {
-    const testAccount = await nodemailer.createTestAccount();
-    return devConfig(testAccount);
+    return {
+      host: 'smtp.ethereal.email',
+      auth: await nodemailer.createTestAccount()
+    };
   }
 }
 
 class Mail {
+  data:MailData;
+
+  constructor(data:MailData) {
+    this.data = data;
+  }
+
   async sendMail() {
     const mailConfig = await setMailConfig();
     const transport = nodemailer.createTransport(mailConfig);
-    const info = await transport.sendMail(this);
+    const info = await transport.sendMail(this.data);
   
     if (process.env.DEV_ENV) {
       console.log('URL: ' + nodemailer.getTestMessageUrl(info));
