@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import passport from 'passport';
 import createAccount from './createAccount';
 import accessAccount from './accessAccount';
 import createFastToken from './createFastToken';

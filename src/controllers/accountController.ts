@@ -18,7 +18,7 @@ class AccountController {
     return AccountModel.create(account);
   }
 
-  async getById(id:string) {
+  async getById(id:string | number) {
     const account = await AccountModel.findOne({ where: {id: Number(id)} });
 
     if(account) return account;

@@ -8,7 +8,7 @@ class Redis {
       url: process.env.REDIS_ENDPOINT,
       password: process.env.REDIS_PASSWORD
     });
-    this.client.on('error', (err:any) => console.error(err));
+    this.client.on('error', (err:any) => console.error({ err }));
     this.client.connect();
   }
 

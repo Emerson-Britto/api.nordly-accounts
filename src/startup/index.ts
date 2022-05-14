@@ -3,7 +3,8 @@ import '../dataBases/mySql/createTables';
 import '../routers/account/authenticationStrategy';
 
 (async()=> {
-	if (process.env.DROP_ALL_ACCOUNTS_FROM_DB == 1) {
+	const dropAllAccount:number = Number(process.env.DROP_ALL_ACCOUNTS_FROM_DB || 0);
+	if (dropAllAccount === 1) {
 		await accountController.dropOffAccounts({ force: true });
 	}	
 })()

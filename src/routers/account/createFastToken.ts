@@ -1,24 +1,29 @@
+import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
-import redis from '../../common/redis';
-import securityController from './securityController';
+import redis from '../../dataBases/redis';
+import securityController from '../../controllers/securityController';
 import authorizedServices  from '../../common/authorizedServices';
 import { urlEncoding } from '../../helpers';
 import { InvalidService } from '../../common/error';
+const redisDB = redis.connection();
 
-const createFastToken = async(req, res) => {
+const createFastToken = async(req:Request, res:Response) => {
   try {
-	const { accessToken, afterUrl } = req.query;
+		const { accessToken='', afterUrl='' } = req.query || {};
 
-	const hasSomeAuthorization = authorizedServices
-		.some(service => service.test(urlEncoding(afterUrl).decoder()));
+		if (!accessToken || !afterUrl) return res.status(401).send();
 
-	if (!hasSomeAuthorization) throw new InvalidService('invalid service!');
+		const hasSomeAuthorization = authorizedServices
+			.some(service => service.test(urlEncoding(String(afterUrl)).decoder()));
 
-	await securityController.verifyAccessToken(accessToken);
-	const key = faker.datatype.uuid() + '-tmpKey-' + faker.datatype.uuid();
-	const expireat = moment().add(1, 'm').unix();
-	await redis.set(key, accessToken);
-	redis.expiresAt(key, expireat);
+		if (!hasSomeAuthorization) throw new InvalidService('invalid service!');
+
+		await securityController.verifyAccessToken(String(accessToken));
+		const key = 'tmpKey-' + uuidv4();
+		const expireat = moment().add(1, 'm').unix();
+		await redisDB.set(key, String(accessToken));
+		redisDB.expireAt(key, expireat);
 
     res.status(200).send({ KEY: key });
   } catch(error) {

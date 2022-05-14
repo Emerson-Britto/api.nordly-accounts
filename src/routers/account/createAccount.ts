@@ -6,26 +6,25 @@ import securityController from '../../controllers/securityController';
 import mailController from '../../controllers/mailController';
 
 (async() => {
-	console.log(await accountController.getList())	;
+	console.log(await accountController.getList());
 })()
 
 
 const createAccount = async (req:Request, res:Response) => {
 	await accountController.dropOffAccounts();
 
-	const { newUser, deviceData } = req.body;
-	let userData = newUser;
+	const { newUser, deviceData=null } = req.body;
 
-	const hasError = await formValidator(userData);
+	const hasError = await formValidator(newUser);
 	if (hasError) {
 		return res.status(401).json({ msg: 'account was denied' });
 	};
 
-	//delete userData.rePassword;
-	//userData.passwordHash = await securityController.getHash(userData.password);
-	userData.lastSeen = moment().subtract({ day: 14, hour: 22 }).unix();
+	//delete newUser.rePassword;
+	//newUser.passwordHash = await securityController.getHash(newUser.password);
+	newUser.lastSeen = moment().subtract({ day: 14, hour: 22 }).unix();
 
-	const dbUserData = await accountController.add(userData);
+	const dbUserData = await accountController.add(newUser);
 	await mailController.sendVerificationMail(dbUserData.mail);
 
 	res.status(201).send();

@@ -8,7 +8,7 @@ import { DBAccount } from '../../common/interfaces';
 const accessAccount = async(req:Request, res:Response) => {
 
 	await accountController.dropOffAccounts();
-	const account = req.account;
+	const account = req.body.account;
 	const deviceData = req.body.deviceData;
 
 	// if(!account.verified) {
@@ -17,10 +17,9 @@ const accessAccount = async(req:Request, res:Response) => {
 	// }
 
 	const newLastSeen = moment().unix();
-	await accountController.update(account, { newLastSeen });
+	await accountController.update(account, { lastSeen: newLastSeen });
 
 	const accessToken = await securityController.createAccessToken(account, deviceData);
-
 	res.status(200).send({ ACCESS_TOKEN: accessToken });
 }
 
