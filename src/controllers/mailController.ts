@@ -1,13 +1,16 @@
 import { VerificationMail } from '../mailer/verificationMail';
 import securityController from './securityController';
+import { LoginInfor } from '../common/interfaces';
 
 class MailController {
   constructor() {}
 
-  async sendVerificationMail(mail:string) {
-    const code:number = await securityController.createTempCode(mail);
-    const verificationMail = new VerificationMail({ mail, code });
+  async sendVerificationMail(loginData:LoginInfor) {
+    const code:string = await securityController.createTempCode(loginData.mail);
+    const socketCode:string = await securityController.createTempCode(loginData.mail, "socket_code");
+    const verificationMail = new VerificationMail(loginData, code);
     await verificationMail.sendMail().catch(console.warn);
+    return socketCode;
   }
 }
 

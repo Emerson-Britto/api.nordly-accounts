@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import cache from "memory-cache";
 import moment from 'moment';
 import accountController from '../../controllers/accountController';
 import securityController from '../../controllers/securityController';
@@ -11,16 +12,23 @@ const accessAccount = async(req:Request, res:Response) => {
 	const account = req.body.account;
 	const deviceData = req.body.deviceData;
 
-	// if(!account.verified) {
-	// 	await mailController.sendVerificationMail(account.mail);
-	// 	return res.status(428).json({ msg: 'account needs to be verified'});
-	// }
+	const loginData = {
+		status: "requesting Sign-In authorization",
+		mail: account.mail,
+		ip: deviceData.localInfor.YourFuckingIPAddress,
+		date: moment().format('LL'),
+		time: moment().format('LTS'),
+		location: deviceData.localInfor.YourFuckingLocation,
+		ISP: deviceData.localInfor.YourFuckingISP,
+		hostname: deviceData.localInfor.YourFuckingHostname,
+		countryCode: deviceData.localInfor.YourFuckingCountryCode,
+		os: deviceData.platform,
+		userAgent: deviceData.userAgent
+	}
 
-	const newLastSeen = moment().unix();
-	await accountController.update(account, { lastSeen: newLastSeen });
-
-	const accessToken = await securityController.createAccessToken(account, deviceData);
-	res.status(200).send({ ACCESS_TOKEN: accessToken });
+	const socketCode = await mailController.sendVerificationMail(loginData);
+	cache.put(account.mail, loginData, 5 * 60000); // 5 minutes.
+	res.status(200).json({ socketCode });
 }
 
 export default accessAccount;

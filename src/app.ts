@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { createServer } from "http";
 import accountRouter from './routers/account';
+import authorizationRouter from './routers/accessAuthorization';
 import redis from './dataBases/redis';
 const app = express();
 
@@ -38,5 +39,6 @@ app.get('/', (req:Request, res:Response) => {
 })
 
 app.use('/account', accountRouter)
+app.use('/authorization', authorizationRouter)
 
 export default createServer(app);

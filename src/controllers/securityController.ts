@@ -1,7 +1,8 @@
-import bcrypt from 'bcrypt';
-import redis from '../dataBases/redis';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import moment from 'moment';
+import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+import redis from '../dataBases/redis';
 import { InvalidArgumentError, InternalServerError } from '../common/error';
 import { DBAccount, TokenInfor } from '../common/interfaces';
 const redisDB = redis.connection();
@@ -44,27 +45,23 @@ class SecurityController {
     }
   }
 
-  async createTempCode(mail:string, temp:number=15, min:number=100000, max:number=999999) {
+  async createTempCode(mail:string, name:string="temp_code", temp:number=5): Promise<string> {
     if (!mail) throw new InvalidArgumentError('mail is required!');
-    const code:number = Math.floor(Math.random() * (max - min) + min);
+    const code:string = uuidv4();
 
-    await redisDB.set(`${mail}::temp_code`, code);
+    await redisDB.set(`${mail}::${name}`, code);
     const expireat:number = moment().add(temp, 'm').unix();
-    redisDB.expireAt(`${mail}::temp_code`, expireat);
+    redisDB.expireAt(`${mail}::${name}`, expireat);
     return code;
   }
 
-  async isValidTempCode(mail:string, code:String) {
-    const dbCode = await redisDB.get(`${mail}::temp_code`);
-
-    if (dbCode === null) {
-      throw new InvalidArgumentError('Code expired or never existed!');
-    }
-
+  async isValidTempCode(mail:string, code:String, name:string="temp_code") {
+    const dbCode = await redisDB.get(`${mail}::${name}`);
     if (dbCode == code) {
-      await redisDB.del(mail);
+      await redisDB.del(`${mail}::${name}`);
       return true;
     }
+
     return false;
   }
 

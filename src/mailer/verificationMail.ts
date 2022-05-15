@@ -1,17 +1,16 @@
 import Mail from './index';
-import { MailData } from '../common/interfaces';
+import { MailData, LoginInfor } from '../common/interfaces';
 
-function mailText({ mail, code }:{ mail:string, code:number }) {
+function mailText(data:LoginInfor) {
   return`
-  By: inifity - account center
-  Mail: ${ mail }
-  Verification Code: ${ code }
+  By: Nordly - Account Center
+  Mail: ${data.mail}
+  login confirmation
   `
 }
 
-function mailHtml({ mail, code }:{ mail:string, code:number }) {
+function mailHtml(data:LoginInfor, code:string) {
   return`
-<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -25,8 +24,31 @@ function mailHtml({ mail, code }:{ mail:string, code:number }) {
       padding: 0;
       color: #fff;
     }
+
+    #confirmation_illustration {
+      width: 260px;
+      margin: 50px 0;
+    }
+
+    .actions_section {
+      margin: 50px 0;
+    }
+
+    .actions_btn {
+      border: none;
+      padding: 5px 10px;
+      margin: 0 5px;
+      background-color: #29294F;
+      font-size: 1.3em;
+      transition: 400ms;
+      cursor: pointer;
+    }
+
+    .actions_btn:hover {
+      background-color: #1D1C36;
+    }
   </style>
-  <title>INFINITY</title>
+  <title>Nordly</title>
 </head>
 <body
   style="
@@ -41,22 +63,33 @@ function mailHtml({ mail, code }:{ mail:string, code:number }) {
       height: 80vh;
     ">
     <img
-      style="width: 70%;"
-      src="https://cdn-istatics.herokuapp.com/static/imgs/branding/infinity-center.png"
-      alt="ifinity center img"
+      style="width: 50%;"
+      src="https://cdn-istatics.herokuapp.com/static/imgs/branding/nordly_branding_title.png"
+      alt="Nordly Branding"
     />
     <hr style="opacity: 30%; width: 80%; margin: 0 auto;" />
 
     <section style="text-align: center; color: #fff; font-family: sans-serif;">
-
       <img
-        style="width: 160px; margin: 20px 0;"
-        src="https://cdn-istatics.herokuapp.com/static/imgs/repository/sendMail.png"
+        id="confirmation_illustration"
+        src="https://cdn-istatics.herokuapp.com/static/imgs/illustrations/undraw_confirm_re_69me.svg"
         alt="sendMail_icon"
       />
-      <h2 style="margin: 30px 0 50px 0;">Verification Code</h2>
-      <p>Mail: ${mail}</p>
-      <p style="font-size: 1.2em; margin: 10px 0;"><strong>Code: ${code}</strong></p>
+      <p>IP: ${data.ip}</p>
+      <p>DATE: ${data.date}</p>
+      <p>TIME: ${data.time}</p>
+      <p>LOCATION: ${data.location}</p>
+      <p>ISP: ${data.ISP}</p>
+      <p>HOSTNAME: ${data.hostname}</p>
+      <p>OS: ${data.os}</p>
+      <div class="actions_section">
+        <a href="#">
+          <button class="actions_btn">Yes, authorize</button>
+        </a>
+        <a href="#">
+          <button class="actions_btn">No, deny</button>
+        </a>
+      </div>
     </section>
   </section>
 </body>
@@ -65,13 +98,13 @@ function mailHtml({ mail, code }:{ mail:string, code:number }) {
 }
 
 class VerificationMail extends Mail {
-  constructor({ mail, code }:{ mail:string, code:number }) {
+  constructor(data:LoginInfor, code:string) {
     super({
       from: '"Nordly Center" <noreply@nordly.com>',
-      to: mail,
+      to: data.mail,
       subject: 'Verification Mail',
-      text: mailText({ mail, code }),
-      html: mailHtml({ mail, code })   
+      text: mailText(data),
+      html: mailHtml(data, code)   
     });
   }
 }

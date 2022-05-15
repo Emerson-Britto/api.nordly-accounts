@@ -12,6 +12,7 @@ class AccountModel extends Model<InferAttributes<AccountModel>, InferCreationAtt
   declare displayName:string;
   declare mail:string;
   declare lastSeen:number;
+  declare verified:number;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -33,6 +34,10 @@ AccountModel.init(
     },
     lastSeen: {
       type: DataTypes.STRING(128),
+      allowNull: false
+    },
+    verified: {
+      type: DataTypes.STRING(1),
       allowNull: false
     },
     createdAt: DataTypes.DATE,
