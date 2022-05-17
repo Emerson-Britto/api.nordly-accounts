@@ -17,20 +17,20 @@ class Socket {
         const isValid = await securityController.isValidTempCode(mail, socketCode, "socket_code");
         if (!isValid) return callback({ error: true, status: 401, msg: "invalid SOCKET_CODE!" });
 
-        socket.code = socketCode;
-        socket.mail = mail;
+        socket.data.code = socketCode;
+        socket.data.mail = mail;
         this.sockets.push(socket);
       });
       socket.on("disconnect", () => {
         this.sockets = this.sockets.filter(s => s.id != socket.id);
-        console.log(`socket (${socket.id}) disconnected with (${socket.mail}).`);
+        console.log(`socket (${socket.id}) disconnected with (${socket.data.mail}).`);
       });
     })
   }
 
   connection(property:string) {
     const [ key, value ] = property.split(':');
-    const socket = this.sockets.find(s => s[key] === value);
+    const socket = this.sockets.find(s => s.data[key] === value);
     return socket;
   }
 }
