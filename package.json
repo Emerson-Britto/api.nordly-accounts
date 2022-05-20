@@ -57,5 +57,15 @@
     "@types/uuid": "^8.3.4",
     "nodemon": "^2.0.16",
     "ts-node": "^10.7.0"
-  }
+  },
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": true
+        }
+      }
+    ]
+  ]
 }

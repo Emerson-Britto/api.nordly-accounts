@@ -13,12 +13,11 @@ import mailController from '../../controllers/mailController';
 
 const createAccount = async (req:Request, res:Response) => {
 	await accountController.dropOffAccounts();
-
 	const { newUser, deviceData=null } = req.body;
 
+	if (!newUser) return res.status(401).json({ msg: "invalid form!" });
 	const hasError = await formValidator(newUser);
-	const invalidDevice = !deviceData || !deviceData.localInfor.YourFuckingIPAddress || !deviceData.platform;
-
+	const invalidDevice = !deviceData || !deviceData.locationData.YourFuckingIPAddress || !deviceData.platform;
 	if (hasError) return res.status(401).json({ msg: 'account was denied' });
 	if (invalidDevice) return res.status(401).json({ msg: 'Unknown Device Data'})
 
@@ -32,13 +31,13 @@ const createAccount = async (req:Request, res:Response) => {
 		const loginData = {
 			status: "requesting Sign-Up authorization",
 			mail: dbUserData.mail,
-			ip: deviceData.localInfor.YourFuckingIPAddress,
+			ip: deviceData.locationData.YourFuckingIPAddress,
 			date: moment().format('LL'),
 			time: moment().format('LTS'),
-			location: deviceData.localInfor.YourFuckingLocation,
-			ISP: deviceData.localInfor.YourFuckingISP,
-			hostname: deviceData.localInfor.YourFuckingHostname,
-			countryCode: deviceData.localInfor.YourFuckingCountryCode,
+			location: deviceData.locationData.YourFuckingLocation,
+			ISP: deviceData.locationData.YourFuckingISP,
+			hostname: deviceData.locationData.YourFuckingHostname,
+			countryCode: deviceData.locationData.YourFuckingCountryCode,
 			os: deviceData.platform,
 			userAgent: deviceData.userAgent
 		}
@@ -64,5 +63,5 @@ export default createAccount;
 //     doNotTrack:string;
 //     cookieEnabled:string;
 //   };
-//   localInfor:any;
+//   locationData:any;
 // }

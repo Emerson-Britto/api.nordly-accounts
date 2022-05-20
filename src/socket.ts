@@ -1,17 +1,26 @@
 import { Server } from "socket.io";
-import httpServer from './app';
 import mailController from "./controllers/mailController";
 import securityController from './controllers/securityController';
-const io = new Server(httpServer);
+
+interface Identification {
+  mail:string;
+  socketCode:string;
+}
 
 class Socket {
   sockets:any[];
+  ioInstance:any;
 
   constructor() {
     this.sockets = [];
-    io.on('connection', socket => {
+    this.ioInstance = null;
+  }
+
+  start(httpServer:any) {
+    this.ioInstance = new Server(httpServer);
+    this.ioInstance.on('connection', (socket:any) => {
       console.log(`socket (${socket.id}) connected.`);
-      socket.on("checkMail", async({ mail, socketCode }, callback) => {
+      socket.on("checkMail", async({ mail, socketCode }:Identification, callback:(s:any) => void) => {
         const invalidMail = !mail || mail.length < 15 || !socketCode;
         if (invalidMail) return callback({ error: true, status: 401, msg: "invalid mail!" });
         const isValid = await securityController.isValidTempCode(mail, socketCode, "socket_code");

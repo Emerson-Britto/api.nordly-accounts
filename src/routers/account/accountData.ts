@@ -7,7 +7,7 @@ const redisDB = redis.connection();
 interface AccountData {
   currentDevice?:any;
   account?: {
-    displayName:string;
+    username:string;
     mail:string;
     lastSeen:number;
   }

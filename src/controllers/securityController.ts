@@ -24,10 +24,10 @@ class SecurityController {
 
   async createAccessToken(account:DBAccount, deviceData:any) {
     try {
-      const { id, displayName } = account;
+      const { id, username } = account;
       const payload = {
         uuidb: id,
-        dName: displayName
+        dName: username
       };
 
       if (!KEY) throw new InternalServerError('unavailable service!');

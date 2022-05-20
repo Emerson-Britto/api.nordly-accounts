@@ -18,9 +18,12 @@ class AccountController {
     return AccountModel.create(account);
   }
 
-  async getById(id:string | number) {
-    const account = await AccountModel.findOne({ where: {id: Number(id)} });
+  async getBy(property:any) {
+    return AccountModel.findOne({ where: property });
+  }
 
+  async getById(id:string | number) {
+    const account = await AccountModel.findOne({ where: {id: Number(id)}});
     if(account) return account;
 
     throw new InvalidArgumentError('No Found data with this Id!');

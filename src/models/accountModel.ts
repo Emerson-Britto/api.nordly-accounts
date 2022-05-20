@@ -9,7 +9,7 @@ import {
 
 class AccountModel extends Model<InferAttributes<AccountModel>, InferCreationAttributes<AccountModel>> {
   declare id: CreationOptional<number>;
-  declare displayName:string;
+  declare username:string;
   declare mail:string;
   declare lastSeen:number;
   declare verified:number;
@@ -24,20 +24,22 @@ AccountModel.init(
       autoIncrement: true,
       primaryKey: true
     },
-    displayName: {
+    username: {
       type: new DataTypes.STRING(20),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     mail: {
       type: new DataTypes.STRING(40),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     lastSeen: {
-      type: DataTypes.STRING(128),
+      type: new DataTypes.STRING(128),
       allowNull: false
     },
     verified: {
-      type: DataTypes.STRING(1),
+      type: new DataTypes.STRING(1),
       allowNull: false
     },
     createdAt: DataTypes.DATE,

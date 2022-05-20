@@ -1,9 +1,11 @@
-import { UserData } from '../common/interfaces'; 
+import { UserData } from '../common/interfaces';
+import accountController from '../controllers/accountController';
 
-const formValidator = (userData:UserData): boolean => {
+const formValidator = async(userData:UserData): Promise<boolean> => {
 	const errors = [
 		Object.keys(userData).length === 0,
-		userData.displayName.length > 14 || userData.displayName.length < 4,
+		await accountController.getBy({ mail: userData.mail }),
+		userData.username.length > 14 || userData.username.length < 4,
 		userData.mail.length > 40 || userData.mail.length < 8
 	]
 

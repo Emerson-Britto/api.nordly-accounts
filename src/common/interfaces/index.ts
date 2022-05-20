@@ -1,10 +1,10 @@
 export interface UserData {
-	displayName:string;
+	username:string;
 	mail:string;
 }
 
 export interface Account {
-	displayName:string;
+	username:string;
 	mail:string;
 	lastSeen:number;
 	verified:number;
@@ -12,7 +12,7 @@ export interface Account {
 
 export interface DBAccount {
 	id:number;
-	displayName:string;
+	username:string;
 	mail:string;
 	lastSeen:number;
 	verified:number;

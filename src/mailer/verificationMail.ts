@@ -83,10 +83,10 @@ function mailHtml(data:LoginInfor, code:string) {
       <p>HOSTNAME: ${data.hostname}</p>
       <p>OS: ${data.os}</p>
       <div class="actions_section">
-        <a href="#">
+        <a href="http://localhost:7050/authorization/${code}?mail=${data.mail}&authorized=allow">
           <button class="actions_btn">Yes, authorize</button>
         </a>
-        <a href="#">
+        <a href="http://localhost:7050/authorization/${code}?mail=${data.mail}&authorized=deny">
           <button class="actions_btn">No, deny</button>
         </a>
       </div>
@@ -100,7 +100,7 @@ function mailHtml(data:LoginInfor, code:string) {
 class VerificationMail extends Mail {
   constructor(data:LoginInfor, code:string) {
     super({
-      from: '"Nordly Center" <noreply@nordly.com>',
+      from: '"Nordly Center" <nordly.team@nordly.com>',
       to: data.mail,
       subject: 'Verification Mail',
       text: mailText(data),

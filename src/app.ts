@@ -41,4 +41,5 @@ app.get('/', (req:Request, res:Response) => {
 app.use('/account', accountRouter)
 app.use('/authorization', authorizationRouter)
 
-export default createServer(app);
+const httpServer = createServer(app)
+export default httpServer;

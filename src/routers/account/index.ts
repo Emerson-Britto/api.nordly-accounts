@@ -4,6 +4,7 @@ import accessAccount from './accessAccount';
 import createFastToken from './createFastToken';
 import accessFastToken from './accessFastToken';
 import accountData from './accountData';
+import evenExists from './evenExists';
 import authenticatonMiddlewares from './authenticationMiddlewares';
 
 const router = express.Router();
@@ -18,6 +19,10 @@ router.options('/', (req:Request, res:Response) => {
 router
     .route('/')
     .get(accountData)
+
+router
+    .route('/exists')
+    .get(evenExists)
 
 router
     .route('/createFastToken')
