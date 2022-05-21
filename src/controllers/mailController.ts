@@ -6,11 +6,9 @@ class MailController {
   constructor() {}
 
   async sendVerificationMail(loginData:LoginInfor) {
-    const code:string = await securityController.createTempCode(loginData.mail);
-    const socketCode:string = await securityController.createTempCode(loginData.mail, "socket_code");
+    const code:string = await securityController.createToken(loginData.mail);
     const verificationMail = new VerificationMail(loginData, code);
     await verificationMail.sendMail().catch(console.warn);
-    return socketCode;
   }
 }
 

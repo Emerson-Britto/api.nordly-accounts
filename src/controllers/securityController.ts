@@ -45,7 +45,7 @@ class SecurityController {
     }
   }
 
-  async createTempCode(mail:string, name:string="temp_code", temp:number=5): Promise<string> {
+  async createToken(mail:string, name:string="temp_token", temp:number=5): Promise<string> {
     if (!mail) throw new InvalidArgumentError('mail is required!');
     const code:string = uuidv4();
 
@@ -55,7 +55,7 @@ class SecurityController {
     return code;
   }
 
-  async isValidTempCode(mail:string, code:String, name:string="temp_code") {
+  async isValidToken(mail:string, code:String, name:string="temp_token") {
     const dbCode = await redisDB.get(`${mail}::${name}`);
     if (dbCode == code) {
       await redisDB.del(`${mail}::${name}`);

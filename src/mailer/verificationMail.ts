@@ -19,6 +19,10 @@ function mailHtml(data:LoginInfor, code:string) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Padauk&display=swap" rel="stylesheet">
   <style>
+    html {
+      background-color: #000;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -26,8 +30,13 @@ function mailHtml(data:LoginInfor, code:string) {
     }
 
     #confirmation_illustration {
-      width: 260px;
-      margin: 50px 0;
+      width: 280px;
+      filter: invert(100%);
+      margin: 30px 0 50px 0;
+    }
+
+    .infors {
+      margin: 4px 0;
     }
 
     .actions_section {
@@ -37,33 +46,43 @@ function mailHtml(data:LoginInfor, code:string) {
     .actions_btn {
       border: none;
       padding: 5px 10px;
-      margin: 0 5px;
-      background-color: #29294F;
+      margin: 0 10px;
+      background-color: transparent;
+      border: 3px solid #A4EFA9;
+      color: #A4EFA9;
+      border-radius: 6px;
       font-size: 1.3em;
-      transition: 400ms;
+      transition: 300ms;
       cursor: pointer;
     }
 
+    #deny_btn {
+      border: 3px solid #FF9E9F;
+      background-color: transparent;
+      color: #FF9E9F;
+    }
+    #deny_btn:hover {
+      background-color: #FF8278;
+      color: #000;
+    }
+
     .actions_btn:hover {
-      background-color: #1D1C36;
+      color: #000;
+      background-color: #7FEF89;
     }
   </style>
   <title>Nordly</title>
 </head>
-<body
-  style="
-    background-color: #000;
-  "
->
+<body>
   <section
     style="
       text-align: center;
-      width: 90vw;
+      width: 90%;
       margin: 0 auto;
-      height: 80vh;
+      height: 80%;
     ">
     <img
-      style="width: 50%;"
+      style="width: 35%;"
       src="https://cdn-istatics.herokuapp.com/static/imgs/branding/nordly_branding_title.png"
       alt="Nordly Branding"
     />
@@ -72,22 +91,22 @@ function mailHtml(data:LoginInfor, code:string) {
     <section style="text-align: center; color: #fff; font-family: sans-serif;">
       <img
         id="confirmation_illustration"
-        src="https://cdn-istatics.herokuapp.com/static/imgs/illustrations/undraw_confirm_re_69me.svg"
+        src="https://cdn-istatics.herokuapp.com/static/imgs/illustrations/undraw_Confirm_re_69me.png"
         alt="sendMail_icon"
       />
-      <p>IP: ${data.ip}</p>
-      <p>DATE: ${data.date}</p>
-      <p>TIME: ${data.time}</p>
-      <p>LOCATION: ${data.location}</p>
-      <p>ISP: ${data.ISP}</p>
-      <p>HOSTNAME: ${data.hostname}</p>
-      <p>OS: ${data.os}</p>
+      <p class="infors">IP: ${data.ip}</p>
+      <p class="infors">DATE: ${data.date}</p>
+      <p class="infors">TIME: ${data.time}</p>
+      <p class="infors">LOCATION: ${data.location}</p>
+      <p class="infors">ISP: ${data.ISP}</p>
+      <p class="infors">HOSTNAME: ${data.hostname}</p>
+      <p class="infors">OS: ${data.os}</p>
       <div class="actions_section">
         <a href="http://localhost:7050/authorization/${code}?mail=${data.mail}&authorized=allow">
           <button class="actions_btn">Yes, authorize</button>
         </a>
         <a href="http://localhost:7050/authorization/${code}?mail=${data.mail}&authorized=deny">
-          <button class="actions_btn">No, deny</button>
+          <button id="deny_btn" class="actions_btn">No, deny</button>
         </a>
       </div>
     </section>

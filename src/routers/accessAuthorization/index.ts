@@ -21,7 +21,7 @@ router.get("/:code", async(req:Request, res:Response) => {
 
   try {
     if (!mail || !authorized || !code) return res.status(401).send();
-    const isValid = await securityController.isValidTempCode(String(mail), code, "temp_code");
+    const isValid = await securityController.isValidToken(String(mail), code, "temp_token");
     if (!isValid) return res.status(401).send();
     const socket = io.connection(`mail:${mail}`);
 

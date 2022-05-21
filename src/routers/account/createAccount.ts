@@ -42,9 +42,10 @@ const createAccount = async (req:Request, res:Response) => {
 			userAgent: deviceData.userAgent
 		}
 
-		const socketCode = await mailController.sendVerificationMail(loginData);
+		await mailController.sendVerificationMail(loginData);
+		const socketCode:string = await securityController.createToken(loginData.mail, "socket_code");
 		cache.put(dbUserData.mail, loginData, 5 * 60000); // 5 minutes.
-		res.status(200).json({ socketCode });
+		res.status(200).json({ socketCode: 'null' });
 	} catch(err) {
 		res.status(401).json({ msg: err });
 	}

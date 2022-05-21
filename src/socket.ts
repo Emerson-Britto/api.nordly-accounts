@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { v4 as uuidv4 } from 'uuid';
 import mailController from "./controllers/mailController";
 import securityController from './controllers/securityController';
 
@@ -21,10 +22,10 @@ class Socket {
     this.ioInstance.on('connection', (socket:any) => {
       console.log(`socket (${socket.id}) connected.`);
       socket.on("checkMail", async({ mail, socketCode }:Identification, callback:(s:any) => void) => {
-        const invalidMail = !mail || mail.length < 15 || !socketCode;
+        const invalidMail = !mail || mail.length < 11;
         if (invalidMail) return callback({ error: true, status: 401, msg: "invalid mail!" });
-        const isValid = await securityController.isValidTempCode(mail, socketCode, "socket_code");
-        if (!isValid) return callback({ error: true, status: 401, msg: "invalid SOCKET_CODE!" });
+        const isValid = await securityController.isValidToken(mail, socketCode, "socket_code");
+        if (!isValid || !socketCode) return callback({ error: true, status: 401, msg: "invalid SOCKET_CODE!" });
 
         socket.data.code = socketCode;
         socket.data.mail = mail;

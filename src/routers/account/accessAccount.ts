@@ -26,7 +26,8 @@ const accessAccount = async(req:Request, res:Response) => {
 		userAgent: deviceData.userAgent
 	}
 
-	const socketCode = await mailController.sendVerificationMail(loginData);
+	await mailController.sendVerificationMail(loginData);
+	const socketCode:string = await securityController.createToken(loginData.mail, "socket_code");
 	cache.put(account.mail, loginData, 5 * 60000); // 5 minutes.
 	res.status(200).json({ socketCode });
 }
