@@ -1,5 +1,7 @@
+import { Request } from 'express';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as CustomStrategy } from 'passport-custom';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import accountController from '../../controllers/accountController';
 import securityController from '../../controllers/securityController';
@@ -27,6 +29,25 @@ passport.use(
       }
     }
   )
+);
+
+passport.use('customStrategy', new CustomStrategy(async(req:Request, done) => {
+    const { username=null, mail=null } = req.body?.user || {};
+    const invalidForm = !username || !mail;
+
+    try {
+      if (invalidForm) throw new InvalidArgumentError('invalid form!');
+      const account = await accountController.getByMail(mail);
+      if (account.username != username) {
+        throw new InvalidArgumentError('invalid username!!');
+      }
+
+      done(null, account);
+    } catch (err) {
+      console.error(err);
+      done({ name: "InvalidArgumentError", msg: "invalid username and mail!" });
+    }
+  })
 );
 
 passport.use(

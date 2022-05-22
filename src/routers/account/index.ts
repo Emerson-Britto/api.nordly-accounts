@@ -38,7 +38,7 @@ router
 
 router
     .route('/login')
-    .post(authenticatonMiddlewares.local, accessAccount)
+    .post(authenticatonMiddlewares.custom, accessAccount)
 
 
 export default router;

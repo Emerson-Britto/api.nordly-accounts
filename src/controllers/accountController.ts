@@ -2,6 +2,7 @@ import moment from 'moment';
 import { RedisClientType } from 'redis';
 import { Account, DBAccount } from '../common/interfaces';
 import { AccountModel } from '../models';
+import { sleep } from '../helpers';
 import securityController from './securityController';
 import redis from '../dataBases/redis';
 import { InvalidArgumentError } from '../common/error';
@@ -68,27 +69,32 @@ class AccountController {
     return AccountModel.destroy({ where: { id: id }});
   }
 
-  async dropOffAccounts(options?:{ force?:boolean }) {
-    const { force=false } = options || {};
-    const result = await redisDB.exists("noVerifyOffAccounts");
-    if (result && !force) return;
+  async dropInactiveAccounts() {
+    const tenMinutes = 10 * 60000;
+    const twentyMinutes = 20 * 60;
+    const fifteenDays = 15 * 24 * 60 * 60;
 
-    console.log('>> DROPPING DB...');
+    console.log("AccountController -> dropInactiveAccounts()");
 
-    const accountsList:DBAccount  [] = await this.getList();
-
-    for(let i=0; i < accountsList.length; i++) {
-      const account:DBAccount = accountsList[i];
-      const accountLastSeen:Number = moment().unix() - Number(account.lastSeen);
-      if (accountLastSeen > (15 * 24 * 60 * 60) || force) {
-        await securityController.revokeAllTokens(account);
-        this.remove(account.id);
+    try {
+      const accounts:DBAccount  [] = await this.getList();
+      for(let i=0; i < accounts.length; i++) {
+        let account:DBAccount = accounts[i];
+        let accountLastSeen:Number = moment().unix() - Number(account.lastSeen);
+        let accountVerified:Number = Number(account.verified);
+        if (
+          (accountLastSeen > twentyMinutes && accountVerified === 0) ||
+          (accountLastSeen > fifteenDays)
+        ) {
+          await securityController.revokeAllTokens(account);
+          this.remove(account.id);
+        }
       }
+      await sleep(() => this.dropInactiveAccounts(), tenMinutes);
+    } catch(err) {
+      console.error(err);
+      await sleep(() => this.dropInactiveAccounts(), tenMinutes);
     }
-
-    redisDB.set("noVerifyOffAccounts", ";)");
-    redisDB.expireAt("noVerifyOffAccounts", moment().add(30, 'm').unix())
-    console.log('>> DROPPING DB FINISHED');
   }
 }
 

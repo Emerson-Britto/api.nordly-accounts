@@ -75,9 +75,9 @@ class SecurityController {
     redisDB.expireAt(accessToken, expireat);
   }
 
-  async deleteToken(accessToken:string) {
+  async deleteToken(tokenKey:string) {
     try {
-      await redisDB.del(accessToken);
+      await redisDB.del(tokenKey);
     } catch(error) {
       console.error(error);
       throw new InvalidArgumentError('Token has not been removed!');

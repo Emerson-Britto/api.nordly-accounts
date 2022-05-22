@@ -7,21 +7,19 @@ import mailController from '../../controllers/mailController';
 import { DBAccount } from '../../common/interfaces';
 
 const accessAccount = async(req:Request, res:Response) => {
-
-	await accountController.dropOffAccounts();
 	const account = req.body.account;
 	const deviceData = req.body.deviceData;
 
 	const loginData = {
 		status: "requesting Sign-In authorization",
 		mail: account.mail,
-		ip: deviceData.localInfor.YourFuckingIPAddress,
+		ip: deviceData.locationData.YourFuckingIPAddress,
 		date: moment().format('LL'),
 		time: moment().format('LTS'),
-		location: deviceData.localInfor.YourFuckingLocation,
-		ISP: deviceData.localInfor.YourFuckingISP,
-		hostname: deviceData.localInfor.YourFuckingHostname,
-		countryCode: deviceData.localInfor.YourFuckingCountryCode,
+		location: deviceData.locationData.YourFuckingLocation,
+		ISP: deviceData.locationData.YourFuckingISP,
+		hostname: deviceData.locationData.YourFuckingHostname,
+		countryCode: deviceData.locationData.YourFuckingCountryCode,
 		os: deviceData.platform,
 		userAgent: deviceData.userAgent
 	}

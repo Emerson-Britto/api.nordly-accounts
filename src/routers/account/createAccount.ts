@@ -12,7 +12,6 @@ import mailController from '../../controllers/mailController';
 
 
 const createAccount = async (req:Request, res:Response) => {
-	await accountController.dropOffAccounts();
 	const { newUser, deviceData=null } = req.body;
 
 	if (!newUser) return res.status(401).json({ msg: "invalid form!" });
@@ -45,7 +44,7 @@ const createAccount = async (req:Request, res:Response) => {
 		await mailController.sendVerificationMail(loginData);
 		const socketCode:string = await securityController.createToken(loginData.mail, "socket_code");
 		cache.put(dbUserData.mail, loginData, 5 * 60000); // 5 minutes.
-		res.status(200).json({ socketCode: 'null' });
+		res.status(200).json({ socketCode });
 	} catch(err) {
 		res.status(401).json({ msg: err });
 	}

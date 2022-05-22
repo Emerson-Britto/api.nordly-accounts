@@ -21,6 +21,25 @@ class AuthenticationMiddlewares {
     	return next();
 		})(req, res, next);
 	}
+
+  custom(req:Request, res:Response, next:NextFunction) {
+    passport.authenticate('customStrategy', {}, (error, account, infor) => {
+      if (error && error.name === 'InvalidArgumentError') {
+        return res.status(401).json({ error });
+      }
+
+      if (error) {
+        return res.status(500).json({ error });
+      }
+
+      if (!account) {
+        return res.status(401).json({error: 'undefined account'});
+      }
+
+      req.body.account = account;
+      return next();
+    })(req, res, next);
+  }
 }
 
 const authenticationMiddlewares = new AuthenticationMiddlewares();
