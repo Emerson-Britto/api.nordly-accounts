@@ -11,7 +11,7 @@ const accessAccount = async(req:Request, res:Response) => {
 	const deviceData = req.body.deviceData;
 
 	const loginData = {
-		status: "requesting Sign-In authorization",
+		status: "from Sign-In",
 		mail: account.mail,
 		ip: deviceData.locationData.YourFuckingIPAddress,
 		date: moment().format('LL'),

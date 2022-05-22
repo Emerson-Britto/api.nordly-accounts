@@ -93,6 +93,7 @@ class SecurityController {
   async verifyAccessToken(accessToken:string): Promise<string | JwtPayload> {
     const command:string[] = ['SCAN', '0', 'MATCH', `*::${accessToken}`, 'COUNT', '10000'];
     const result:any[] = await redisDB.sendCommand(command);
+    console.log(command);
     const exists = Boolean(result[1].length);
     if (exists) return this.decoderToken(accessToken);
     throw new InvalidArgumentError('invalid token!');

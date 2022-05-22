@@ -14,27 +14,33 @@ interface AccountData {
 }
 
 const accountData = async(req:Request, res:Response) => {
-  const { token='', part='' } = req.query || {};
+  const { accessToken='', part='' } = req.query || {};
   const partList = String(part).split(',');
 	const data:AccountData = {};
 
-  const { uuidb }:any = await securityController.verifyAccessToken(String(token));
+  try {
+    const { uuidb }:any = await securityController.verifyAccessToken(String(accessToken));
 
-  if (partList.includes('currentDevice')) {
-    const tokenData = await redisDB.get(String(token));
-  	data['currentDevice'] = JSON.parse(tokenData || '');
+    if (partList.includes('currentDevice')) {
+      const account = await accountController.getById(uuidb);
+      const tokenData = await redisDB.get(`${account.mail}::${accessToken}`);
+      data['currentDevice'] = JSON.parse(tokenData || '');
+    }
+
+    if (partList.includes('account')) {
+      const account = await accountController.getById(uuidb);
+      data['account'] = account;
+    }
+
+    // if (partList.includes('devices')) {
+    //  data['devices'] = await accountController.listDevices({id: Number(uuidb)});
+    // }
+
+    res.status(200).json(data);
+  } catch(err) {
+    console.error(err);
+    res.status(401).json({ msg: 'invalid token or token provide expired data' });
   }
-
-  if (partList.includes('account')) {
-  	const account = await accountController.getById(uuidb);
-  	data['account'] = account;
-  }
-
-  // if (partList.includes('devices')) {
-  // 	data['devices'] = await accountController.listDevices({id: Number(uuidb)});
-  // }
-
-  res.status(200).json(data);
 }
 
 export default accountData;

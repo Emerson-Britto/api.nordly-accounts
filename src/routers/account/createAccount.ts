@@ -28,7 +28,7 @@ const createAccount = async (req:Request, res:Response) => {
 		const dbUserData = await accountController.add(newUser);
 
 		const loginData = {
-			status: "requesting Sign-Up authorization",
+			status: "from Sign-Up",
 			mail: dbUserData.mail,
 			ip: deviceData.locationData.YourFuckingIPAddress,
 			date: moment().format('LL'),
