@@ -14,7 +14,8 @@ interface AccountData {
 }
 
 const accountData = async(req:Request, res:Response) => {
-  const { accessToken='', part='' } = req.query || {};
+  const accessToken = req.headers.authorization;
+  const { part='' } = req.query || {};
   const partList = String(part).split(',');
 	const data:AccountData = {};
 

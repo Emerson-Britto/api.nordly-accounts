@@ -18,7 +18,7 @@ router.options('/', (req:Request, res:Response) => {
 
 router
     .route('/')
-    .get(accountData)
+    .get(authenticatonMiddlewares.bearer, accountData)
 
 router
     .route('/exists')
@@ -26,7 +26,7 @@ router
 
 router
     .route('/createFastToken')
-    .get(createFastToken)
+    .get(authenticatonMiddlewares.bearer, createFastToken)
 
 router
     .route('/accessFastToken')

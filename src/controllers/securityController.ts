@@ -66,13 +66,17 @@ class SecurityController {
   }
 
   async updateTokenLastSeen(account:DBAccount, accessToken:string) {
-    const deviceDataStr:string | null = await redisDB.get(`${account.mail}::${accessToken}`);
+    const slotKey = `${account.mail}::${accessToken}`;
+    const ttlCommand:string[] = ['TTL', `${account.mail}::${accessToken}`];
+
+    const deviceDataStr:string | null = await redisDB.get(slotKey);
     if (!deviceDataStr) throw new InvalidArgumentError('invalid token!');
     const deviceData:TokenInfor = JSON.parse(deviceDataStr);
     deviceData.lastAccess = moment().unix();
-    await redisDB.set(accessToken, JSON.stringify(deviceData));
-    const expireat = moment().add(15, 'd').unix();
-    redisDB.expireAt(accessToken, expireat);
+    const tokenTTL:string = await redisDB.sendCommand(ttlCommand);
+    const expireat = moment().add(Number(tokenTTL), 's').unix();
+    await redisDB.set(slotKey, JSON.stringify(deviceData));
+    redisDB.expireAt(slotKey, expireat);
   }
 
   async deleteToken(tokenKey:string) {
@@ -93,7 +97,6 @@ class SecurityController {
   async verifyAccessToken(accessToken:string): Promise<string | JwtPayload> {
     const command:string[] = ['SCAN', '0', 'MATCH', `*::${accessToken}`, 'COUNT', '10000'];
     const result:any[] = await redisDB.sendCommand(command);
-    console.log(command);
     const exists = Boolean(result[1].length);
     if (exists) return this.decoderToken(accessToken);
     throw new InvalidArgumentError('invalid token!');

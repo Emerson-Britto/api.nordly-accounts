@@ -40,6 +40,30 @@ class AuthenticationMiddlewares {
       return next();
     })(req, res, next);
   }
+
+  bearer(req:Request, res:Response, next:NextFunction) {
+    passport.authenticate('bearer', { session: false }, (error, account, accessToken, infor) => {
+      if (error && error.name === 'InvalidArgumentError') {
+        return res.status(401).json({ msg: error });
+      }
+
+      if (error) {
+        return res.status(500).json({ msg: error });
+      }
+
+      if(!accessToken) {
+        return res.status(401).json({ msg: "invalid token!" })
+      }
+
+      if (!account) {
+        return res.status(401).json({ msg: 'undefined account' });
+      }
+
+      req.body.account = account;
+      req.headers.authorization = accessToken;
+      return next();
+    })(req, res, next);
+  }
 }
 
 const authenticationMiddlewares = new AuthenticationMiddlewares();

@@ -3,16 +3,16 @@ import redis from '../../dataBases/redis';
 import { InvalidArgumentError } from '../../common/error';
 const redisDB = redis.connection();
 
-const createFastToken = async(req:Request, res:Response) => {
-  try {
-		const { passToken='' } = req.query || {};
 
-		if (passToken && await redisDB.exists(String(passToken))) {
-			const accessToken = await redisDB.get(String(passToken));
-			res.status(200).send({ ACCESS_TOKEN: accessToken });
-		} else {
-			throw new InvalidArgumentError('invalid passToken!')
-		}
+// TEMP
+const accessFastToken = async(req:Request, res:Response) => {
+  try {
+ 		const { passToken='' } = req.query || {};
+		const isActiveToken = await redisDB.exists(`${passToken}`);
+		if (!passToken || !isActiveToken) throw new InvalidArgumentError('invalid passToken!')
+
+		const accessToken = await redisDB.get(`${passToken}`);
+		res.status(200).send({ ACCESS_TOKEN: accessToken });
 
   } catch(error) {
   	console.error(error);
@@ -20,4 +20,4 @@ const createFastToken = async(req:Request, res:Response) => {
   }
 }
 
-export default createFastToken;
+export default accessFastToken;

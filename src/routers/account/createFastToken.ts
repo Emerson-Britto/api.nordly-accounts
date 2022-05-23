@@ -10,14 +10,14 @@ const redisDB = redis.connection();
 
 const createFastToken = async(req:Request, res:Response) => {
   try {
-		const { accessToken='', afterUrl='' } = req.query || {};
-
+  	const accessToken = req.headers.authorization;
+		const { afterUrl='' } = req.query || {};
 		if (!accessToken || !afterUrl) return res.status(401).send();
 
 		const hasSomeAuthorization = authorizedServices
 			.some(service => service.test(urlEncoding(String(afterUrl)).decoder()));
 
-		if (!hasSomeAuthorization) throw new InvalidService('invalid service!');
+		if (!hasSomeAuthorization) throw new InvalidService('service unauthorized!');
 
 		await securityController.verifyAccessToken(String(accessToken));
 		const key = 'tmpKey-' + uuidv4();
