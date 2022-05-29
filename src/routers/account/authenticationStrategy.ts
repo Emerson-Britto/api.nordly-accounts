@@ -29,15 +29,17 @@ passport.use('customStrategy', new CustomStrategy(async(req:Request, done) => {
 );
 
 passport.use(
-  new BearerStrategy(async(token:string, done) => {
+  new BearerStrategy(async(accessToken:string, done) => {
+    console.log({ accessToken });
     try {
-      const { uuidb }:any = await securityController.verifyAccessToken(token);
+      const { uuidb }:any = await securityController.verifyAccessToken(accessToken);
       const account = await accountController.getById(uuidb);
-      await securityController.updateTokenLastSeen(account, token);
+      await securityController.updateTokenLastSeen(account, accessToken);
       const newLastSeen = moment().unix();
       await accountController.update(account, { lastSeen: newLastSeen });
-      done(null, account, token);
+      done(null, account, accessToken);
     } catch (error) {
+      console.error({error});
       done(error);
     }
   })

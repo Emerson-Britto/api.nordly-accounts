@@ -11,6 +11,7 @@ interface AccountData {
     mail:string;
     lastSeen:number;
   }
+  devices?: any[];
 }
 
 const accountData = async(req:Request, res:Response) => {
@@ -21,21 +22,23 @@ const accountData = async(req:Request, res:Response) => {
 
   try {
     const { uuidb }:any = await securityController.verifyAccessToken(String(accessToken));
+    const account = await accountController.getById(uuidb);
 
     if (partList.includes('currentDevice')) {
-      const account = await accountController.getById(uuidb);
       const tokenData = await redisDB.get(`${account.mail}::${accessToken}`);
       data['currentDevice'] = JSON.parse(tokenData || '');
     }
 
     if (partList.includes('account')) {
-      const account = await accountController.getById(uuidb);
       data['account'] = account;
     }
 
-    // if (partList.includes('devices')) {
-    //  data['devices'] = await accountController.listDevices({id: Number(uuidb)});
-    // }
+    if (partList.includes('devices')) {
+      data['devices'] = await securityController.allTokensData({
+        includeThis: accessToken,
+        account
+      });
+    }
 
     res.status(200).json(data);
   } catch(err) {

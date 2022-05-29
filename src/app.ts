@@ -8,7 +8,7 @@ const app = express();
 
 // (async() => {
 //   const redisDB = redis.connection();
-//   const result = await redisDB.sendCommand(['SCAN', '0', 'MATCH', 'emer*******7@gmail.com::*', 'COUNT', '10000']);
+//   const result = await redisDB.sendCommand(['SCAN', '0', 'MATCH', '*::eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9*', 'COUNT', '10000']);
 //   // const result = await redisDB.get('*::dfdsfdgdgdgdf')
 //   console.log({ result });
 

@@ -3,7 +3,7 @@ import moment from 'moment';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import redis from '../dataBases/redis';
-import { InvalidArgumentError, InternalServerError } from '../common/error';
+import { InvalidArgumentError, InternalServerError, InvalidTokenError } from '../common/error';
 import { DBAccount, TokenInfor } from '../common/interfaces';
 const redisDB = redis.connection();
 
@@ -98,19 +98,46 @@ class SecurityController {
     const command:string[] = ['SCAN', '0', 'MATCH', `*::${accessToken}`, 'COUNT', '10000'];
     const result:any[] = await redisDB.sendCommand(command);
     const exists = Boolean(result[1].length);
-    if (exists) return this.decoderToken(accessToken);
-    throw new InvalidArgumentError('invalid token!');
+    if (!exists) throw new InvalidTokenError('invalid token!');
+    return this.decoderToken(accessToken);
+  }
+
+  async revokeToken(accessToken:string) {
+    const command:string[] = ['SCAN', '0', 'MATCH', `*::${accessToken}`, 'COUNT', '10000'];
+    const result:any[] = await redisDB.sendCommand(command);
+    const keys:string[] = result[1];
+    const key:string = keys[0];
+    await this.deleteToken(key);
   }
 
   async revokeAllTokens(account:DBAccount) {
     const command:string[] = ['SCAN', '0', 'MATCH', `${account.mail}::*`, 'COUNT', '10000'];
     const result:any[] = await redisDB.sendCommand(command);
     const keys:string[] = result[1];
-    for(let i=0; i < keys.length; i++) {
+    for (let i=0; i < keys.length; i++) {
       let key:string = keys[i];
       await this.deleteToken(key);
     }
     return true;
+  }
+
+  async allTokensData({ account, includeThis }:{ account:DBAccount, includeThis?:string }) {
+    const devices = [];
+    const command:string[] = ['SCAN', '0', 'MATCH', `${account.mail}::*`, 'COUNT', '10000'];
+    const result:any[] = await redisDB.sendCommand(command);
+    const keys:string[] = result[1];
+    for (let i=0; i < keys.length; i++) {
+      let key:string = keys[i];
+      let token = key.split("::")[1];
+      let thisDevice = includeThis && key.includes(includeThis);
+      let deviceDataStr = await redisDB.get(key);
+      if (!deviceDataStr) continue;
+      let deviceData = JSON.parse(deviceDataStr);
+      deviceData.id = token.split(".")[0];
+      if (thisDevice) { devices.unshift(deviceData) }
+      else { devices.push(deviceData) };
+    }
+    return devices;
   }
 }
 

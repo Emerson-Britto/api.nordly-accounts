@@ -47,6 +47,10 @@ class AuthenticationMiddlewares {
         return res.status(401).json({ msg: error });
       }
 
+      if (error && error.name === 'InvalidTokenError') {
+        return res.status(410).json({ error });
+      }
+
       if (error) {
         return res.status(500).json({ msg: error });
       }

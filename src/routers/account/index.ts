@@ -5,6 +5,7 @@ import createFastToken from './createFastToken';
 import accessFastToken from './accessFastToken';
 import accountData from './accountData';
 import evenExists from './evenExists';
+import logout from './logout';
 import authenticatonMiddlewares from './authenticationMiddlewares';
 
 const router = express.Router();
@@ -39,6 +40,10 @@ router
 router
     .route('/login')
     .post(authenticatonMiddlewares.custom, accessAccount)
+
+router
+    .route('/logout')
+    .get(authenticatonMiddlewares.bearer, logout)
 
 
 export default router;

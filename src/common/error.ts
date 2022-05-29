@@ -7,6 +7,15 @@ class InvalidArgumentError extends Error {
   }
 }
 
+class InvalidTokenError extends Error {
+  msg:string;
+  constructor(msg:string) {
+    super(msg);
+    this.name = 'InvalidTokenError';
+    this.msg = msg;
+  }
+}
+
 class InternalServerError extends Error {
   msg:string;
   constructor(msg:string) {
@@ -28,5 +37,6 @@ class InvalidService extends Error {
 export {
   InvalidArgumentError,
   InternalServerError,
-  InvalidService
+  InvalidService,
+  InvalidTokenError
 };
