@@ -1,40 +1,132 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Mail = require('./index.js').Mail;
-function mailText(_a) {
-    var mail = _a.mail, code = _a.code;
-    return "\n  By: inifity - account center\n  Mail: ".concat(mail, "\n  Verification Code: ").concat(code, "\n  ");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VerificationMail = void 0;
+const index_1 = __importDefault(require("./index"));
+function mailText(data) {
+    return `
+  By: Nordly - Account Center
+  Mail: ${data.mail}
+  login confirmation
+  `;
 }
-function mailHtml(_a) {
-    var mail = _a.mail, code = _a.code;
-    return "\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n  <link href=\"https://fonts.googleapis.com/css2?family=Padauk&display=swap\" rel=\"stylesheet\">\n  <style>\n    * {\n      margin: 0;\n      padding: 0;\n      color: #fff;\n    }\n  </style>\n  <title>INFINITY</title>\n</head>\n<body\n  style=\"\n    background-color: #000;\n  \"\n>\n  <section\n    style=\"\n      text-align: center;\n      width: 90vw;\n      margin: 0 auto;\n      height: 80vh;\n    \">\n    <img\n      style=\"width: 70%;\"\n      src=\"https://cdn-istatics.herokuapp.com/static/imgs/branding/infinity-center.png\"\n      alt=\"ifinity center img\"\n    />\n    <hr style=\"opacity: 30%; width: 80%; margin: 0 auto;\" />\n\n    <section style=\"text-align: center; color: #fff; font-family: sans-serif;\">\n\n      <img\n        style=\"width: 160px; margin: 20px 0;\"\n        src=\"https://cdn-istatics.herokuapp.com/static/imgs/repository/sendMail.png\"\n        alt=\"sendMail_icon\"\n      />\n      <h2 style=\"margin: 30px 0 50px 0;\">Verification Code</h2>\n      <p>Mail: ".concat(mail, "</p>\n      <p style=\"font-size: 1.2em; margin: 10px 0;\"><strong>Code: ").concat(code, "</strong></p>\n    </section>\n  </section>\n</body>\n</html>\n  ");
-}
-var VerificationMail = /** @class */ (function (_super) {
-    __extends(VerificationMail, _super);
-    function VerificationMail(_a) {
-        var mail = _a.mail, code = _a.code;
-        var _this = _super.call(this) || this;
-        _this.from = '"Infinity Center" <noreply@inifity.com>';
-        _this.to = mail;
-        _this.subject = 'Verification Mail';
-        _this.text = mailText({ mail: mail, code: code });
-        _this.html = mailHtml({ mail: mail, code: code });
-        return _this;
+function mailHtml(data, code) {
+    return `
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Padauk&display=swap" rel="stylesheet">
+  <style>
+    html {
+      background-color: #000;
     }
-    return VerificationMail;
-}(Mail));
-module.exports = { VerificationMail: VerificationMail };
+
+    * {
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+
+    #confirmation_illustration {
+      width: 280px;
+      filter: invert(100%);
+      margin: 30px 0 50px 0;
+    }
+
+    .infors {
+      margin: 4px 0;
+    }
+
+    .actions_section {
+      margin: 50px 0;
+    }
+
+    .actions_btn {
+      border: none;
+      padding: 5px 10px;
+      margin: 0 10px;
+      background-color: transparent;
+      border: 3px solid #A4EFA9;
+      color: #A4EFA9;
+      border-radius: 6px;
+      font-size: 1.3em;
+      transition: 300ms;
+      cursor: pointer;
+    }
+
+    #deny_btn {
+      border: 3px solid #FF9E9F;
+      background-color: transparent;
+      color: #FF9E9F;
+    }
+    #deny_btn:hover {
+      background-color: #FF8278;
+      color: #000;
+    }
+
+    .actions_btn:hover {
+      color: #000;
+      background-color: #7FEF89;
+    }
+  </style>
+  <title>Nordly</title>
+</head>
+<body>
+  <section
+    style="
+      text-align: center;
+      width: 90%;
+      margin: 0 auto;
+      height: 80%;
+    ">
+    <img
+      style="width: 35%;"
+      src="https://cdn-istatics.herokuapp.com/static/imgs/branding/nordly_branding_title.png"
+      alt="Nordly Branding"
+    />
+    <hr style="opacity: 30%; width: 80%; margin: 0 auto;" />
+
+    <section style="text-align: center; color: #fff; font-family: sans-serif;">
+      <img
+        id="confirmation_illustration"
+        src="https://cdn-istatics.herokuapp.com/static/imgs/illustrations/undraw_Confirm_re_69me.png"
+        alt="sendMail_icon"
+      />
+      <p class="infors">IP: ${data.ip}</p>
+      <p class="infors">DATE: ${data.date}</p>
+      <p class="infors">TIME: ${data.time}</p>
+      <p class="infors">LOCATION: ${data.location}</p>
+      <p class="infors">ISP: ${data.ISP}</p>
+      <p class="infors">HOSTNAME: ${data.hostname}</p>
+      <p class="infors">OS: ${data.os}</p>
+      <div class="actions_section">
+        <a href="http://localhost:7050/authorization/${code}?mail=${data.mail}&authorized=allow">
+          <button class="actions_btn">Yes, authorize</button>
+        </a>
+        <a href="http://localhost:7050/authorization/${code}?mail=${data.mail}&authorized=deny">
+          <button id="deny_btn" class="actions_btn">No, deny</button>
+        </a>
+      </div>
+    </section>
+  </section>
+</body>
+</html>
+`;
+}
+class VerificationMail extends index_1.default {
+    constructor(data, code) {
+        super({
+            from: '"Nordly Center" <nordly.team@nordly.com>',
+            to: data.mail,
+            subject: 'Verification Mail',
+            text: mailText(data),
+            html: mailHtml(data, code)
+        });
+    }
+}
+exports.VerificationMail = VerificationMail;
