@@ -12,6 +12,8 @@ const createFastToken = async(req:Request, res:Response) => {
   try {
   	const accessToken = req.headers.authorization;
 		const { afterUrl='' } = req.query || {};
+		console.log({ afterUrl });
+		console.log({ accessToken });
 		if (!accessToken || !afterUrl) return res.status(401).send();
 
 		const hasSomeAuthorization = authorizedServices

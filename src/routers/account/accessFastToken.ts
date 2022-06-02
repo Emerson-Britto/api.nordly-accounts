@@ -12,8 +12,7 @@ const accessFastToken = async(req:Request, res:Response) => {
 		if (!passToken || !isActiveToken) throw new InvalidArgumentError('invalid passToken!')
 
 		const accessToken = await redisDB.get(`${passToken}`);
-		res.status(200).send({ ACCESS_TOKEN: accessToken });
-
+		res.status(200).send({ accessToken });
   } catch(error) {
   	console.error(error);
   	res.status(401).json({ error });
